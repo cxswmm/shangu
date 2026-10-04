@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>薛氏家族办公室 · 资产档案</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"Microsoft YaHei",sans-serif;background:#0a0c10;color:#e8e8e8;margin:0;padding:20px 14px;overflow-x:hidden}
+.wrap{max-width:460px;margin:0 auto}
+h1{color:#c9a227;font-size:18px;text-align:center;padding-bottom:10px;margin:10px 0;letter-spacing:2px}
+.card{background:#14171d;border:1px solid #2a2f3a;border-radius:10px;padding:14px;margin:12px 0}
+.label{color:#8b93a7;font-size:12px;letter-spacing:2px}
+.value{font-size:20px;margin-top:6px;color:#f0d98a}
+.assets{color:#f0d98a;font-size:18px;font-weight:600}
+.muted{color:#8b93a7;font-size:12px;line-height:1.7}
+.row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #1e222a}
+.row:last-child{border-bottom:none}
+.gold{color:#f0d98a}
+.small{font-size:12px;color:#8b93a7}
+.err{color:#ff6b6b;font-size:13px;text-align:center;min-height:16px}
+#lock{max-width:360px;margin:30px auto;text-align:center}
+#lock h1{font-size:20px;line-height:1.5;border:none;color:#e8e8e8;letter-spacing:3px}
+.logo{width:70px;height:70px;border:1px solid #c9a227;border-radius:50%;margin:20px auto;position:relative}
+.logo::after{content:"";position:absolute;top:50%;left:50%;width:10px;height:10px;background:#c9a227;border-radius:50%;transform:translate(-50%,-50%)}
+.sub{color:#5a6275;font-size:10px;letter-spacing:4px;margin-bottom:24px}
+#lock input{background:#0a0c10;border:1px solid #2a2f3a;color:#fff;border-radius:6px;padding:12px;width:100%;text-align:center;font-size:16px;letter-spacing:6px}
+.btn-gold{background:#c9a227;color:#0a0c10;border:none;border-radius:6px;padding:12px;font-weight:600;margin-top:14px;width:100%;font-size:15px}
+#scan{max-width:380px;margin:30px auto;text-align:center;display:none}
+.scan-title{color:#ff4d4d;letter-spacing:8px;font-size:15px;margin-bottom:24px;text-shadow:0 0 12px #ff4d4d}
+.scan-box{width:250px;height:250px;margin:0 auto;position:relative;border:1px solid rgba(255,60,60,.25);overflow:hidden;background:#0c0e12}
+.corner{position:absolute;width:28px;height:28px;border:2px solid #ff3b3b}
+.tl{top:-1px;left:-1px;border-right:none;border-bottom:none}
+.tr{top:-1px;right:-1px;border-left:none;border-bottom:none}
+.bl{bottom:-1px;left:-1px;border-right:none;border-top:none}
+.br{bottom:-1px;right:-1px;border-left:none;border-top:none}
+.scan-line{position:absolute;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,#ff3b3b,transparent);box-shadow:0 0 14px #ff3b3b;animation:scanmove 2s linear infinite}
+@keyframes scanmove{0%{top:0}100%{top:100%}}
+.face{font-size:80px;line-height:250px;opacity:.15}
+.scan-text{color:#ff6b6b;margin-top:22px;letter-spacing:3px;font-size:14px}
+.redbox{width:100%;padding:16px;border:1px solid #ff3b3b;background:rgba(255,59,59,.08);border-radius:6px;color:#ff6b6b;text-align:center;font-size:14px;letter-spacing:2px;margin-top:20px;display:none}
+.dialogue{display:none;width:100%;padding:20px 16px;border:1px solid #ff3b3b;background:rgba(255,59,59,.05);border-radius:6px;margin-top:20px;text-align:center}
+.dialogue p{color:#ff6b6b;font-size:15px;margin:0 0 18px;letter-spacing:2px}
+.choice{display:flex;justify-content:center;gap:24px}
+.choice button{background:#12151b;border:1px solid #ff3b3b;color:#ff6b6b;border-radius:4px;padding:10px 30px;font-size:15px}
+#app{display:none}
+.blur{animation:blurIn .6s ease}
+@keyframes blurIn{from{opacity:0;filter:blur(6px)}to{opacity:1;filter:blur(0)}}
+.section-title{color:#8b93a7;font-size:11px;letter-spacing:3px;margin:20px 0 8px;padding-left:4px;border-left:2px solid #c9a227}
+.total-box{text-align:center;padding:24px 0;border-top:1px solid #2a2f3a;margin-top:20px}
+.total-label{color:#8b93a7;font-size:12px;letter-spacing:3px}
+.total-num{color:#f0d98a;font-size:28px;font-weight:700;margin:10px 0;letter-spacing:1px}
+.total-sub{color:#5a6275;font-size:11px;line-height:1.8}
+</style>
+</head>
+<body>
+
+<div id="lock">
+  <div class="logo"></div>
+  <div class="sub">PRIVATE ACCESS · TIER I</div>
+  <h1>薛氏家族办公室<br>资产档案验证</h1>
+  <div class="sub" style="letter-spacing:1px;margin-top:8px">SIT Family Office · Asset Dossier Verification</div>
+  <input type="password" id="pwd" placeholder="ACCESS CODE">
+  <button class="btn-gold" onclick="toScan()">授权访问</button>
+  <div class="err" id="err"></div>
+</div>
+
+<div id="scan">
+  <div class="scan-title">人脸核验</div>
+  <div class="scan-box">
+    <div class="corner tl"></div><div class="corner tr"></div>
+    <div class="corner bl"></div><div class="corner br"></div>
+    <div class="scan-line"></div>
+    <div class="face">👤</div>
+  </div>
+  <div class="scan-text" id="scanText">扫描中...</div>
+  <div class="redbox" id="breach">
+    <div style="font-size:24px">🔴</div>
+    <div style="margin-top:6px">SECURITY BREACH DETECTED</div>
+    <div style="font-size:12px;margin-top:4px;opacity:.8">检测到安全入侵 · 正在确认入侵者IP</div>
+    <div style="font-size:20px;color:#f0d98a;margin-top:14px" id="pct">40%</div>
+  </div>
+  <div class="dialogue" id="dialogue">
+    <p>收到一条消息 是否选择查看</p>
+    <div class="choice">
+      <button onclick="choose('yes')">是</button>
+      <button onclick="choose('no')">否</button>
+    </div>
+  </div>
+</div>
+
+<div id="app" class="wrap blur">
+  <div class="label" style="text-align:center;letter-spacing:4px;margin-top:10px">FAMILY OFFICE · CONFIDENTIAL</div>
+  <h1 style="border:none;color:#fff;font-size:26px;text-align:left;padding:0;margin:6px 0 2px;letter-spacing:4px">薛桐</h1>
+  <div class="muted" style="text-align:left;margin-bottom:14px">Arsit</div>
+  <div class="card">
+    <div class="row"><span class="small">档案生成</span><span class="small">2026年10月4日</span></div>
+    <div class="row"><span class="small">锁定档案</span><span class="small gold">绝密 · 仅限本人</span></div>
+  </div>
+
+  <div class="section-title">I · 核心存款 · DEPOSITS</div>
+  <div class="card">
+    <div class="label">🏦 银行存款·HKD</div>
+    <div class="muted">汇丰银行（HSBC）· 港币 · 薪俸储蓄账户</div>
+    <div class="assets" style="margin-top:8px">HKD 16,400,000,000</div>
+    <div class="label" style="margin-top:14px">🏦 银行存款·CNY</div>
+    <div class="muted">中国银行（香港）· 人民币 · 多币种储蓄（沪港公务往来）</div>
+    <div class="assets" style="margin-top:8px">CNY 628,000,000,000</div>
+    <div class="label" style="margin-top:14px">🌐 其他存款（离岸账户）</div>
+    <div class="muted">新加坡大华银行离岸储蓄 · 用于资产配置</div>
+    <div class="assets" style="margin-top:8px">USD 1,500,000</div>
+    <div class="row"><span>🟢 微信资金</span><span class="gold">HKD 68,000,000</span></div>
+    <div class="row"><span>🔵 支付宝资金</span><span class="gold">CNY 45,000,000</span></div>
+    <div class="row"><span>💵 币种现金（家中保险柜）</span><span class="gold">HKD 300,000,000</span></div>
+    <div class="row"><span>💳 汇丰卓越理财·万事达世界卡</span><span class="gold">额度 HKD 5,000,000</span></div>
+  </div>
+
+  <div class="section-title">II · 投资与控股 · HOLDINGS</div>
+  <div class="card">
+    <div class="row"><span>集团持股<br><span class="small">主营领域：地产发展与投资 · 红龙置业</span></span><span class="gold">50%<br><span class="small">实际控制人</span></span></div>
+    <div class="row"><span>家族信托</span><span class="muted">无</span></div>
+    <div class="row"><span>股票 / 基金组合<br><span class="small">港股蓝筹及指数基金</span></span><span class="gold">HKD 379,000,000</span></div>
+    <div class="row"><span>私募股权 / 加密货币<br><span class="small">比特币少量持有</span></span><span class="gold">HKD 37,200,000,000</span></div>
+    <div class="row"><span>实物黄金 · 债券<br><span class="small">金条 500g + 香港政府债券</span></span><span class="gold">HKD 560,000,000</span></div>
+  </div>
+
+  <div class="section-title">III · 固定资产 · REAL ASSETS</div>
+  <div class="card">
+    <div class="label">🏠 房产 | 港岛半山·薛家大宅</div>
+    <div class="muted">家族核心物业</div>
+    <div class="assets" style="margin-top:6px">HKD 80,000,000,000</div>
+    <div class="label" style="margin-top:14px">🏠 房产 | 港岛赤道</div>
+    <div class="muted">私人住宅</div>
+    <div class="assets" style="margin-top:6px">HKD 670,000,000</div>
+    <div class="label" style="margin-top:14px">🏢 房产 | 中环·甲级写字楼整层</div>
+    <div class="muted">商业物业</div>
+    <div class="assets" style="margin-top:6px">HKD 2,400,000,000</div>
+    <div class="label" style="margin-top:14px">🏠 房产 | 西班牙整栋别墅</div>
+    <div class="muted">海外度假物业</div>
+    <div class="assets" style="margin-top:6px">EUR 4,800,000,000</div>
+    <div class="row"><span>🚗 车辆 | 阿斯顿马丁 DBX707<br><span class="small">购入值 HKD 3,200,000</span></span><span class="gold">HKD 3,200,000</span></div>
+    <div class="row"><span>🚗 车辆 | 奔驰 G63<br><span class="small">购入值 HKD 2,560,000</span></span><span class="gold">HKD 2,560,000</span></div>
+    <div class="row"><span>✈️ 私人飞机<br><span class="small">机队总值</span></span><span class="gold">HKD 26,000,000,000</span></div>
+    <div class="row"><span>🛥️ 私人游艇<br><span class="small">游艇总值</span></span><span class="gold">HKD 6,300,000,000</span></div>
+    <div class="row"><span>🏝️ 名下私人岛屿<br><span class="small">岛屿总值</span></span><span class="gold">HKD 7,200,000,000</span></div>
+    <div class="row"><span>💎 珠宝，钻石，矿产<br><span class="small">家族传承及私人收藏</span></span><span class="gold">HKD 47,000,000,000</span></div>
+    <div class="row"><span>🐎 私人马场<br><span class="small">马场总值</span></span><span class="gold">HKD 3,800,000,000</span></div>
+    <div class="row"><span>🍷 私人酒窖<br><span class="small">酒窖总值</span></span><span class="gold">HKD 6,200,000,000</span></div>
+    <div class="row"><span>🖼️ 各类收藏品<br><span class="small">家族传承及私人收藏</span></span><span class="gold">HKD 5,700,000,000</span></div>
+  </div>
+
+  <div class="section-title">IV · 近期资产变动 · MOVEMENTS</div>
+  <div class="card">
+    <div class="row"><span>房产转出（原港岛西环旧居出售）</span><span class="gold">+ HKD 6,800,000,000</span></div>
+  </div>
+
+  <div class="section-title">V · 剩余资产 · NET POSITION</div>
+  <div class="card">
+    <div class="row"><span>存款及现金</span><span class="gold">HKD 16,768,000,000</span></div>
+    <div class="row"><span>投资理财</span><span class="gold">HKD 38,139,000,000</span></div>
+    <div class="row"><span>固定资产（剩余）</span><span class="gold">HKD 185,275,760,000</span></div>
+    <div class="row"><span>股权及信托</span><span class="gold">HKD 800,000,000</span></div>
+  </div>
+
+  <div class="total-box">
+    <div class="total-label">VI · 个人净资产 · 当前</div>
+    <div class="total-num" id="totalNum">HKD 1,208,983,257,500</div>
+    <div class="total-sub">约 HKD 1,208,983,257,500<br>红龙置业掌权人 / 香港警务处鉴证科警司</div>
+    <div class="total-sub" style="margin-top:14px">本档案仅供 薛桐 参考<br>未经授权不得外传 · 红龙置业 · 2026</div>
+  </div>
+</div>
+
+<script>
+const PASSWORD="xs2026";
+function toScan(){
+  if(document.getElementById('pwd').value!==PASSWORD){
+    document.getElementById('err').textContent='密码错误';
+    return;
+  }
+  document.getElementById('lock').style.display='none';
+  document.getElementById('scan').style.display='block';
+  const t=document.getElementById('scanText');
+  const steps=['扫描中...','采集面部特征...','比对身份信息...','验证通过 ✓'];
+  let i=0;
+  const timer=setInterval(()=>{
+    i++;
+    if(i<steps.length) t.textContent=steps[i];
+  },800);
+  setTimeout(()=>{clearInterval(timer);showBreach();},3200);
+}
+function showBreach(){
+  const b=document.getElementById('breach');
+  b.style.display='block';
+  let p=40;
+  const pct=document.getElementById('pct');
+  const timer=setInterval(()=>{
+    p+=Math.floor(Math.random()*15)+5;
+    if(p>=100){p=100;clearInterval(timer);setTimeout(showDialogue,600);}
+    pct.textContent=p+'%';
+  },300);
+}
+function showDialogue(){
+  document.getElementById('dialogue').style.display='block';
+}
+function choose(ans){
+  document.getElementById('scan').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('app').classList.add('blur');
+}
+</script>
+</body>
+</html>
